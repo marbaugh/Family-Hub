@@ -2,6 +2,18 @@
 
 A self-hosted family dashboard with calendar, chores, weather, Home Assistant integration, and photo slideshow.
 
+## Screenshots
+
+| Dashboard | Calendar |
+|-----------|----------|
+| ![Dashboard](screenshots/screenshot-dashboard.png) | ![Calendar](screenshots/screenshot-calendar.png) |
+
+| Chores | Settings |
+|--------|----------|
+| ![Chores](screenshots/screenshot-chores.png) | ![Settings](screenshots/screenshot-settings-top.png) |
+
+---
+
 ## Features
 
 - Dashboard with today's events, chores due, weather, and home device status
