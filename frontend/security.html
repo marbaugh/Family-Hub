@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Security – Family Hub</title>
+<link rel="stylesheet" href="/css/style.css?v=8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="app">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">🏠</span>
+      <span class="logo-text">Family Hub</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="/" class="nav-link"><span class="nav-icon">📊</span><span>Dashboard</span></a></li>
+      <li><a href="/calendar.html" class="nav-link"><span class="nav-icon">📅</span><span>Calendar</span></a></li>
+      <li><a href="/chores.html" class="nav-link"><span class="nav-icon">✅</span><span>Chores</span></a></li>
+      <li><a href="/security.html" class="nav-link active"><span class="nav-icon">🔐</span><span>Security</span></a></li>
+      <li><a href="/settings.html" class="nav-link"><span class="nav-icon">⚙️</span><span>Settings</span></a></li>
+    </ul>
+    <div class="sidebar-members" id="sidebarMembers"></div>
+  </nav>
+
+  <main class="main-content">
+    <header class="page-header">
+      <h1 class="page-title">🔐 Security</h1>
+    </header>
+
+    <!-- Garage Doors -->
+    <section class="dashboard-section" id="garageSection" style="display:none">
+      <div class="section-header">
+        <h2 class="section-title">🚗 Garage Doors</h2>
+        <button class="btn btn-ghost" style="font-size:13px" onclick="loadSecurityDevices()">↻ Refresh</button>
+      </div>
+      <div class="card-grid" id="garageCards"></div>
+    </section>
+
+    <!-- Alarm -->
+    <section class="dashboard-section" id="alarmSection" style="display:none">
+      <div class="section-header">
+        <h2 class="section-title">🔒 Alarm System</h2>
+      </div>
+      <div class="card-grid" id="alarmCards"></div>
+    </section>
+
+    <!-- Other HA Devices -->
+    <section class="dashboard-section" id="otherSection" style="display:none">
+      <div class="section-header">
+        <h2 class="section-title">📡 Other Devices</h2>
+      </div>
+      <div class="card-grid" id="otherCards"></div>
+    </section>
+
+    <!-- Not configured -->
+    <section class="dashboard-section" id="haNotConfigured" style="display:none">
+      <div class="empty-state" style="padding:32px">
+        Home Assistant is not configured. Go to <a href="/settings.html">Settings → Home Assistant</a> to set it up.
+      </div>
+    </section>
+
+    <!-- Camera Feeds -->
+    <section class="dashboard-section" id="cameraSection" style="display:none">
+      <div class="section-header">
+        <h2 class="section-title">📷 Camera Feeds</h2>
+      </div>
+      <div class="camera-grid" id="cameraGrid"></div>
+    </section>
+
+    <section class="dashboard-section" id="cameraNotConfigured" style="display:none">
+      <div class="empty-state" style="padding:32px">
+        No cameras configured. Go to <a href="/settings.html">Settings → Cameras</a> to add your camera streams.
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="/js/api.js?v=8"></script>
+<script src="/js/security.js?v=8"></script>
+<script src="/js/slideshow.js?v=8"></script>
+<button class="slideshow-trigger" onclick="Slideshow.start()" title="Start slideshow">📷</button>
+</body>
+</html>

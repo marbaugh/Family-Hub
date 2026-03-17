@@ -1,0 +1,5 @@
+api:
+  listen: :1984
+
+log:
+  level: warn

@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   loadHASettings();
   loadTimezone();
   loadLunchSettings();
+  loadStockSettings();
+  loadCameraSettings();
 
   document.getElementById('addMemberBtn').onclick = () => openMemberModal();
   document.getElementById('closeMemberModal').onclick = closeMemberModal;
@@ -522,6 +524,64 @@ async function saveLunchSettings() {
       lunch_school_slug: slug,
       lunch_menu_type: menuType,
     });
+    if (status) { status.textContent = '✅ Saved!'; setTimeout(() => { status.textContent = ''; }, 2000); }
+  } catch(e) {
+    if (status) status.textContent = '❌ Failed to save';
+  }
+}
+
+async function loadStockSettings() {
+  try {
+    const data = await API.get('/api/stocks/settings');
+    const el = document.getElementById('stockSymbols');
+    if (el && data.symbols) el.value = data.symbols;
+  } catch(e) {}
+}
+
+async function saveStockSettings() {
+  const symbols = (document.getElementById('stockSymbols')?.value || '').trim();
+  const status = document.getElementById('stockSaveStatus');
+  try {
+    await API.post('/api/settings/', { stock_symbols: symbols });
+    if (status) { status.textContent = '✅ Saved!'; setTimeout(() => { status.textContent = ''; }, 2000); }
+  } catch(e) {
+    if (status) status.textContent = '❌ Failed to save';
+  }
+}
+
+async function loadCameraSettings() {
+  try {
+    const data = await API.get('/api/security/cameras');
+    const cameras = data.cameras || [];
+    const list = document.getElementById('cameraList');
+    list.innerHTML = '';
+    cameras.forEach(c => addCameraRow(c.name, c.rtsp_url));
+  } catch(e) {}
+}
+
+function addCameraRow(name = '', rtspUrl = '') {
+  const list = document.getElementById('cameraList');
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap';
+  row.innerHTML = `
+    <input type="text" class="form-input cam-name" placeholder="FrontDoor" value="${name}" style="flex:1;min-width:120px;max-width:180px">
+    <input type="text" class="form-input cam-url" placeholder="rtsps://192.168.1.1:7441/token" value="${rtspUrl}" style="flex:3;min-width:200px">
+    <button class="btn btn-danger-ghost" onclick="this.parentElement.remove()" style="padding:8px 10px">✕</button>
+  `;
+  list.appendChild(row);
+}
+
+async function saveCameraSettings() {
+  const rows = document.querySelectorAll('#cameraList > div');
+  const cameras = [];
+  rows.forEach(row => {
+    const name = row.querySelector('.cam-name')?.value.trim();
+    const url = row.querySelector('.cam-url')?.value.trim();
+    if (name && url) cameras.push({ name, rtsp_url: url });
+  });
+  const status = document.getElementById('cameraSaveStatus');
+  try {
+    await API.post('/api/security/cameras', { cameras });
     if (status) { status.textContent = '✅ Saved!'; setTimeout(() => { status.textContent = ''; }, 2000); }
   } catch(e) {
     if (status) status.textContent = '❌ Failed to save';
