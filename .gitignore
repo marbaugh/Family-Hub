@@ -6,6 +6,7 @@ venv/
 .env
 *.env
 data/
+backup_data/
 .claude/
 .DS_Store
 .vscode/
