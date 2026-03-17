@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Family Hub</title>
-<link rel="stylesheet" href="/css/style.css?v=8">
+<link rel="stylesheet" href="/css/style.css?v=10">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
@@ -38,9 +38,8 @@
   <main class="main-content">
     <header class="page-header">
       <div>
-        <h1 class="page-title">Good <span id="timeGreeting">morning</span>! 👋</h1>
-        <p class="page-subtitle" id="todayDate"></p>
-        <p id="dailyQuote" style="font-size:13px;color:var(--text2);font-style:italic;margin-top:6px;max-width:500px;line-height:1.5"></p>
+        <h1 class="page-title">Good <span id="timeGreeting">morning</span>! 👋 &nbsp;<span class="page-subtitle" id="todayDate"></span></h1>
+        <p id="dailyQuote" style="font-size:12px;color:var(--text2);font-style:italic;margin-top:3px;max-width:500px;line-height:1.4"></p>
       </div>
       <div class="header-right">
         <div id="haStatusBadge" class="ha-status-badge"></div>
@@ -51,46 +50,55 @@
     <!-- Stock Ticker -->
     <div id="stockTicker" class="stock-ticker" style="display:none"></div>
 
-    <!-- Today's Events -->
-    <section class="dashboard-section">
-      <div class="section-header">
-        <h2 class="section-title">📅 Up Next</h2>
-        <a href="/calendar.html" class="section-link">View all →</a>
-      </div>
-      <div class="card-grid" id="todayEvents">
-        <div class="empty-state">Loading today's events...</div>
-      </div>
-    </section>
+    <!-- 3-column dashboard grid -->
+    <div class="dashboard-grid">
 
-    <!-- Upcoming Chores -->
-    <section class="dashboard-section">
-      <div class="section-header">
-        <h2 class="section-title">✅ Chores Due Today</h2>
-        <a href="/chores.html" class="section-link">View all →</a>
+      <!-- Col 1: Events -->
+      <div class="dashboard-col">
+        <section class="dashboard-section">
+          <div class="section-header">
+            <h2 class="section-title">📅 Up Next</h2>
+            <a href="/calendar.html" class="section-link">View all →</a>
+          </div>
+          <div class="card-grid" id="todayEvents">
+            <div class="empty-state">Loading today's events...</div>
+          </div>
+        </section>
       </div>
-      <div class="card-grid" id="upcomingChores">
-        <div class="empty-state">Loading chores...</div>
-      </div>
-    </section>
 
-    <!-- School Lunch Menu -->
-    <section class="dashboard-section" id="lunchSection">
-      <div class="section-header">
-        <h2 class="section-title" id="lunchMenuTitle">🍽️ Today's School Menu</h2>
-        <a id="lunchFullMenuLink" href="#" target="_blank" class="section-link" style="display:none">Full menu →</a>
+      <!-- Col 2: Chores -->
+      <div class="dashboard-col">
+        <section class="dashboard-section">
+          <div class="section-header">
+            <h2 class="section-title">✅ Chores Today</h2>
+            <a href="/chores.html" class="section-link">View all →</a>
+          </div>
+          <div class="card-grid" id="upcomingChores">
+            <div class="empty-state">Loading chores...</div>
+          </div>
+        </section>
       </div>
-      <div id="lunchMenu">
-        <div class="empty-state">Loading menu...</div>
+
+      <!-- Col 3: Lunch -->
+      <div class="dashboard-col">
+        <section class="dashboard-section" id="lunchSection">
+          <div class="section-header">
+            <h2 class="section-title" id="lunchMenuTitle">🍽️ School Menu</h2>
+            <a id="lunchFullMenuLink" href="#" target="_blank" class="section-link" style="display:none">Full menu →</a>
+          </div>
+          <div id="lunchMenu">
+            <div class="empty-state">Loading menu...</div>
+          </div>
+        </section>
       </div>
-    </section>
 
-
+    </div><!-- /.dashboard-grid -->
   </main>
 </div>
 
-<script src="/js/api.js?v=8"></script>
-<script src="/js/dashboard.js?v=8"></script>
-  <script src="/js/slideshow.js?v=8"></script>
-  <button class="slideshow-trigger" onclick="Slideshow.start()" title="Start slideshow">📷</button>
+<script src="/js/api.js?v=10"></script>
+<script src="/js/dashboard.js?v=10"></script>
+<script src="/js/slideshow.js?v=10"></script>
+<button class="slideshow-trigger" onclick="Slideshow.start()" title="Start slideshow">📷</button>
 </body>
 </html>
