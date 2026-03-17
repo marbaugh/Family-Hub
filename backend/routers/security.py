@@ -7,8 +7,6 @@ from database import get_db
 
 router = APIRouter()
 
-GO2RTC_URL = os.environ.get("GO2RTC_URL", "http://host.docker.internal:1984")
-
 
 def get_ha_config():
     conn = get_db()
@@ -62,30 +60,12 @@ async def proxy_camera_snapshot(entity_id: str):
     )
 
 
-async def sync_cameras_to_go2rtc(cameras: list):
-    """Push camera RTSP streams to go2rtc via its API (src as query param)."""
-    try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
-            for cam in cameras:
-                rtsp = (cam.get("rtsp_url") or "").strip()
-                name = (cam.get("name") or "").strip().replace(" ", "_")
-                if rtsp and name:
-                    await client.put(
-                        f"{GO2RTC_URL}/api/streams",
-                        params={"name": name, "src": rtsp},
-                    )
-    except Exception as e:
-        print(f"go2rtc sync error: {e}")
-
-
 @router.get("/cameras")
 async def get_cameras():
     conn = get_db()
     row = conn.execute("SELECT value FROM settings WHERE key='cameras'").fetchone()
     conn.close()
     cameras = json.loads(row["value"]) if row and row["value"] else []
-    if cameras:
-        await sync_cameras_to_go2rtc(cameras)
     return {"cameras": cameras}
 
 
@@ -99,6 +79,4 @@ async def save_cameras(data: dict):
     )
     conn.commit()
     conn.close()
-    if cameras:
-        await sync_cameras_to_go2rtc(cameras)
     return {"ok": True}

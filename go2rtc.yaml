@@ -1,8 +1,0 @@
-api:
-  listen: :1984
-
-log:
-  level: warn
-streams:
-  Driveway:
-    - rtsps://192.168.1.1:7441/iMjO7xPRksk9MEGm?enableSrtp

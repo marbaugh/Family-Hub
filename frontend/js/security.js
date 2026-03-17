@@ -130,26 +130,12 @@ async function loadCameraFeeds() {
     }
     notConfigured.style.display = 'none';
     section.style.display = 'block';
-    // go2rtc WebRTC player is on same host, port 1984
-    const go2rtcBase = `${window.location.protocol}//${window.location.hostname}:1984`;
     grid.innerHTML = cameras.map(cam => {
-      let feedHtml;
-      if (cam.ha_entity_id) {
-        // HA camera: proxied MJPEG stream through our backend (token stays server-side)
-        const streamUrl = `/api/security/camera/${encodeURIComponent(cam.ha_entity_id)}/stream`;
-        feedHtml = `<img src="${streamUrl}" class="camera-feed-img" alt="${cam.name}">`;
-      } else if (cam.rtsp_url) {
-        // Non-HA camera: go2rtc WebRTC/MSE
-        const streamName = cam.name.replace(/\s+/g, '_');
-        const streamUrl = `${go2rtcBase}/stream.html?src=${encodeURIComponent(streamName)}&mode=mse,webrtc`;
-        feedHtml = `<iframe src="${streamUrl}" class="camera-feed-iframe" allowfullscreen allow="autoplay"></iframe>`;
-      } else {
-        feedHtml = `<div class="camera-feed-error">No stream configured</div>`;
-      }
+      const streamUrl = `/api/security/camera/${encodeURIComponent(cam.ha_entity_id)}/stream`;
       return `
         <div class="camera-feed-card">
           <div class="camera-feed-label">${cam.name}</div>
-          ${feedHtml}
+          <img src="${streamUrl}" class="camera-feed-img" alt="${cam.name}">
         </div>`;
     }).join('');
   } catch(e) {

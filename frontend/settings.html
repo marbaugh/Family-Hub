@@ -199,8 +199,7 @@
       </div>
       <div class="settings-card" style="flex-direction:column;align-items:stretch;gap:16px">
         <div>
-          <p class="settings-desc">Add your camera streams. Streams are proxied through <strong>go2rtc</strong> (running on port 1984) so they can be viewed in your browser. Supports RTSP, RTSPS, and other go2rtc-compatible sources.</p>
-          <p class="settings-desc" style="margin-top:6px">For Home Assistant cameras, enter the HA Entity ID (e.g. <code>camera.driveway</code>) — no RTSP needed. For non-HA cameras, enter the RTSP URL and it will stream via go2rtc on port 1984.</p>
+          <p class="settings-desc">Add your Home Assistant cameras. Enter the camera name and HA Entity ID (e.g. <code>camera.driveway</code>). Streams are proxied through the backend so your HA token stays server-side.</p>
         </div>
         <div id="cameraList" style="display:flex;flex-direction:column;gap:8px"></div>
         <button class="btn btn-secondary" onclick="addCameraRow()" style="align-self:flex-start">+ Add Camera</button>

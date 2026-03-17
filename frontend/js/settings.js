@@ -555,25 +555,18 @@ async function loadCameraSettings() {
     const cameras = data.cameras || [];
     const list = document.getElementById('cameraList');
     list.innerHTML = '';
-    cameras.forEach(c => addCameraRow(c.name, c.rtsp_url || '', c.ha_entity_id || ''));
+    cameras.forEach(c => addCameraRow(c.name, c.ha_entity_id || ''));
   } catch(e) {}
 }
 
-function addCameraRow(name = '', rtspUrl = '', haEntityId = '') {
+function addCameraRow(name = '', haEntityId = '') {
   const list = document.getElementById('cameraList');
   const row = document.createElement('div');
-  row.style.cssText = 'display:flex;flex-direction:column;gap:6px;padding:12px;background:var(--bg2);border-radius:10px';
+  row.style.cssText = 'display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px;background:var(--bg2);border-radius:10px';
   row.innerHTML = `
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <input type="text" class="form-input cam-name" placeholder="Camera name (e.g. Driveway)" value="${name}" style="flex:1;min-width:160px">
-      <button class="btn btn-danger-ghost" onclick="this.closest('div[style]').remove()" style="padding:8px 10px">✕</button>
-    </div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <input type="text" class="form-input cam-ha-entity" placeholder="HA Entity ID: camera.driveway (preferred)" value="${haEntityId}" style="flex:1;min-width:200px">
-    </div>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <input type="text" class="form-input cam-url" placeholder="RTSP URL (only if no HA entity)" value="${rtspUrl}" style="flex:1;min-width:200px">
-    </div>
+    <input type="text" class="form-input cam-name" placeholder="Camera name (e.g. Driveway)" value="${name}" style="flex:1;min-width:160px">
+    <input type="text" class="form-input cam-ha-entity" placeholder="HA Entity ID (e.g. camera.driveway)" value="${haEntityId}" style="flex:1;min-width:200px">
+    <button class="btn btn-danger-ghost" onclick="this.closest('div[style]').remove()" style="padding:8px 10px">✕</button>
   `;
   list.appendChild(row);
 }
@@ -584,8 +577,7 @@ async function saveCameraSettings() {
   rows.forEach(row => {
     const name = row.querySelector('.cam-name')?.value.trim();
     const haEntity = row.querySelector('.cam-ha-entity')?.value.trim();
-    const url = row.querySelector('.cam-url')?.value.trim();
-    if (name && (haEntity || url)) cameras.push({ name, ha_entity_id: haEntity || '', rtsp_url: url || '' });
+    if (name && haEntity) cameras.push({ name, ha_entity_id: haEntity });
   });
   const status = document.getElementById('cameraSaveStatus');
   try {
