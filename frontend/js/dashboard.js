@@ -407,6 +407,21 @@ async function loadLunchMenu() {
 
   try {
     const data = await API.get(`/api/lunch/today?date=${dateKey}`);
+
+    // Hide section entirely if lunch menu is not configured in Settings
+    if (data.not_configured) {
+      const section = document.getElementById('lunchSection');
+      if (section) section.style.display = 'none';
+      return;
+    }
+
+    // Update the "Full menu →" link using values returned from backend
+    const link = document.getElementById('lunchFullMenuLink');
+    if (link && data.district && data.school_slug && data.menu_type) {
+      link.href = `https://${data.district}.nutrislice.com/menu/${data.school_slug}/${data.menu_type}`;
+      link.style.display = '';
+    }
+
     const { breakfast, lunch } = data;
 
     if (!breakfast.length && !lunch.length) {

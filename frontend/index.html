@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Family Hub</title>
-<link rel="stylesheet" href="/css/style.css?v=6">
+<link rel="stylesheet" href="/css/style.css?v=7">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
@@ -70,10 +70,10 @@
     </section>
 
     <!-- School Lunch Menu -->
-    <section class="dashboard-section">
+    <section class="dashboard-section" id="lunchSection">
       <div class="section-header">
         <h2 class="section-title" id="lunchMenuTitle">🍽️ Today's School Menu</h2>
-        <a href="https://bcps.nutrislice.com/menu/bcps-weekly-menus/weekly-menus" target="_blank" class="section-link">Full menu →</a>
+        <a id="lunchFullMenuLink" href="#" target="_blank" class="section-link" style="display:none">Full menu →</a>
       </div>
       <div id="lunchMenu">
         <div class="empty-state">Loading menu...</div>
@@ -84,9 +84,9 @@
   </main>
 </div>
 
-<script src="/js/api.js?v=6"></script>
-<script src="/js/dashboard.js?v=6"></script>
-  <script src="/js/slideshow.js?v=6"></script>
+<script src="/js/api.js?v=7"></script>
+<script src="/js/dashboard.js?v=7"></script>
+  <script src="/js/slideshow.js?v=7"></script>
   <button class="slideshow-trigger" onclick="Slideshow.start()" title="Start slideshow">📷</button>
 </body>
 </html>

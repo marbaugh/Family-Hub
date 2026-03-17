@@ -7,11 +7,23 @@ from database import get_db
 
 router = APIRouter()
 
-DISTRICT = "bcps"
-SCHOOL_SLUG = "bcps-weekly-menus"
-MENU_TYPE = "weekly-menus"
-
 _cache = {}
+
+def get_lunch_config():
+    """Read lunch settings from DB, falling back to BCPS defaults."""
+    try:
+        conn = get_db()
+        rows = conn.execute(
+            "SELECT key, value FROM settings WHERE key IN ('lunch_district','lunch_school_slug','lunch_menu_type')"
+        ).fetchall()
+        conn.close()
+        s = {r["key"]: r["value"] for r in rows}
+    except Exception:
+        s = {}
+    district = s.get("lunch_district") or "bcps"
+    slug = s.get("lunch_school_slug") or "bcps-weekly-menus"
+    menu_type = s.get("lunch_menu_type") or "weekly-menus"
+    return district, slug, menu_type
 
 def get_app_tz() -> str:
     try:
@@ -30,10 +42,12 @@ def get_today_local():
     return now.strftime("%Y/%m/%d"), now.strftime("%Y-%m-%d")
 
 async def fetch_items_for_date(date_key: str):
-    if date_key in _cache:
-        return _cache[date_key]
+    district, slug, menu_type = get_lunch_config()
+    cache_key = f"{district}:{slug}:{date_key}"
+    if cache_key in _cache:
+        return _cache[cache_key]
     date_path = date_key.replace("-", "/")
-    url = f"https://{DISTRICT}.api.nutrislice.com/menu/api/weeks/school/{SCHOOL_SLUG}/menu-type/{MENU_TYPE}/{date_path}/"
+    url = f"https://{district}.api.nutrislice.com/menu/api/weeks/school/{slug}/menu-type/{menu_type}/{date_path}/"
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.get(url, headers={"Accept": "application/json"})
@@ -106,7 +120,7 @@ async def fetch_items_for_date(date_key: str):
         # If section still unknown, skip — shouldn't happen with valid data
 
     result = {"date": date_key, "breakfast": breakfast, "lunch": lunch}
-    _cache[date_key] = result
+    _cache[cache_key] = result
     return result
 
 async def fetch_todays_items():
@@ -115,18 +129,26 @@ async def fetch_todays_items():
 
 @router.get("/today")
 async def get_todays_menu(date: str = None):
+    district, slug, menu_type = get_lunch_config()
+    if not district:
+        return {"not_configured": True, "breakfast": [], "lunch": []}
     if not date:
         _, date = get_today_local()
     result = await fetch_items_for_date(date)
     if result is None:
         return {"date": date, "breakfast": [], "lunch": [], "error": "Could not fetch menu"}
+    # Include config so frontend can build the full-menu link
+    result["district"] = district
+    result["school_slug"] = slug
+    result["menu_type"] = menu_type
     return result
 
 @router.get("/debug")
 async def debug_menu():
     """Returns raw menu items with image URLs so we can verify section detection."""
+    district, slug, menu_type = get_lunch_config()
     date_path, date_key = get_today_local()
-    url = f"https://{DISTRICT}.api.nutrislice.com/menu/api/weeks/school/{SCHOOL_SLUG}/menu-type/{MENU_TYPE}/{date_path}/"
+    url = f"https://{district}.api.nutrislice.com/menu/api/weeks/school/{slug}/menu-type/{menu_type}/{date_path}/"
     async with httpx.AsyncClient(timeout=10.0) as client:
         resp = await client.get(url, headers={"Accept": "application/json"})
         if resp.status_code != 200:

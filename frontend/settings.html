@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Settings – Family Hub</title>
-<link rel="stylesheet" href="/css/style.css?v=6">
+<link rel="stylesheet" href="/css/style.css?v=7">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
@@ -135,6 +135,39 @@
           <input type="text" id="weatherZip" class="form-input" maxlength="5" placeholder="e.g. 10001" style="max-width:140px">
           <button class="btn btn-primary" onclick="saveWeatherZip()">💾 Save</button>
           <span id="weatherSaveStatus" style="font-size:13px;color:var(--text2)"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- School Lunch Menu -->
+    <section class="dashboard-section">
+      <div class="section-header">
+        <h2 class="section-title">🍽️ School Lunch Menu</h2>
+      </div>
+      <div class="settings-card" style="flex-direction:column;align-items:stretch;gap:16px">
+        <div>
+          <p class="settings-desc">Powered by Nutrislice. Find these values in your school district's menu URL, e.g. <code>https://<strong>bcps</strong>.nutrislice.com/menu/<strong>bcps-weekly-menus</strong>/<strong>weekly-menus</strong></code>. Leave District blank to hide the menu widget.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div>
+            <label class="form-label">District</label>
+            <input type="text" id="lunchDistrict" class="form-input" placeholder="bcps" style="max-width:200px">
+            <div style="font-size:12px;color:var(--text2);margin-top:4px">The subdomain before <code>.nutrislice.com</code></div>
+          </div>
+          <div>
+            <label class="form-label">School Slug</label>
+            <input type="text" id="lunchSchoolSlug" class="form-input" placeholder="bcps-weekly-menus" style="max-width:320px">
+            <div style="font-size:12px;color:var(--text2);margin-top:4px">First path segment after <code>/menu/</code></div>
+          </div>
+          <div>
+            <label class="form-label">Menu Type</label>
+            <input type="text" id="lunchMenuType" class="form-input" placeholder="weekly-menus" style="max-width:200px">
+            <div style="font-size:12px;color:var(--text2);margin-top:4px">Second path segment after <code>/menu/</code></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="btn btn-primary" onclick="saveLunchSettings()">💾 Save</button>
+          <span id="lunchSaveStatus" style="font-size:13px;color:var(--text2)"></span>
         </div>
       </div>
     </section>
@@ -283,9 +316,9 @@
   </div>
 </div>
 
-<script src="/js/api.js?v=6"></script>
-<script src="/js/settings.js?v=6"></script>
-<script src="/js/slideshow.js?v=6"></script>
+<script src="/js/api.js?v=7"></script>
+<script src="/js/settings.js?v=7"></script>
+<script src="/js/slideshow.js?v=7"></script>
 <button class="slideshow-trigger" onclick="Slideshow.start()" title="Start slideshow">📷</button>
 </body>
 </html>

@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   loadWeatherZip();
   loadHASettings();
   loadTimezone();
+  loadLunchSettings();
 
   document.getElementById('addMemberBtn').onclick = () => openMemberModal();
   document.getElementById('closeMemberModal').onclick = closeMemberModal;
@@ -491,6 +492,35 @@ async function saveHASettings() {
       ha_token: token,
       ha_entities: JSON.stringify(entities),
       ha_alarm_code: alarmCode,
+    });
+    if (status) { status.textContent = '✅ Saved!'; setTimeout(() => { status.textContent = ''; }, 2000); }
+  } catch(e) {
+    if (status) status.textContent = '❌ Failed to save';
+  }
+}
+
+async function loadLunchSettings() {
+  try {
+    const s = await API.get('/api/settings/');
+    const district = document.getElementById('lunchDistrict');
+    const slug = document.getElementById('lunchSchoolSlug');
+    const menuType = document.getElementById('lunchMenuType');
+    if (district) district.value = s.lunch_district || 'bcps';
+    if (slug) slug.value = s.lunch_school_slug || 'bcps-weekly-menus';
+    if (menuType) menuType.value = s.lunch_menu_type || 'weekly-menus';
+  } catch(e) {}
+}
+
+async function saveLunchSettings() {
+  const district = (document.getElementById('lunchDistrict')?.value || '').trim();
+  const slug = (document.getElementById('lunchSchoolSlug')?.value || '').trim();
+  const menuType = (document.getElementById('lunchMenuType')?.value || '').trim();
+  const status = document.getElementById('lunchSaveStatus');
+  try {
+    await API.post('/api/settings/', {
+      lunch_district: district,
+      lunch_school_slug: slug,
+      lunch_menu_type: menuType,
     });
     if (status) { status.textContent = '✅ Saved!'; setTimeout(() => { status.textContent = ''; }, 2000); }
   } catch(e) {
