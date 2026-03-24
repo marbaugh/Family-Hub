@@ -170,7 +170,7 @@ async function loadUpcomingChores() {
 
 function renderDashboardChore(c, color) {
   return `
-    <div class="dashboard-chore-item ${c.completed ? 'done' : ''}" id="dchore-${c.id}">
+    <div class="dashboard-chore-item ${c.completed ? 'done' : ''}" id="dchore-${c.id}" style="border-left:3px solid ${color}">
       <div class="dashboard-chore-check ${c.completed ? 'checked' : ''}"
            style="${c.completed ? `background:${color}` : `border-color:${color}`}"
            onclick="toggleDashboardChore(${c.id}, ${c.completed})">
