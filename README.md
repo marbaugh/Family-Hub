@@ -20,22 +20,27 @@ A self-hosted family dashboard built for a wall-mounted touchscreen. Combines ca
 - Greeting with time of day, date, and rotating family quote
 - **Up Next** — upcoming calendar events
 - **Chores Today** — today's chore assignments; shows streak leaderboard when all done
-- **Lunch Menu** — school lunch pulled from Nutrislice (BCPS and others)
-- **Message preview pill** — latest family note displayed above the grid when messages exist
+- **Lunch Menu** — school lunch pulled from Nutrislice (BCPS and others); shows tomorrow after 5 PM
+- **Message preview pill** — latest family note displayed above the grid; ✏️ button to post directly without leaving the dashboard
 - Live Home Assistant status badges (garage, alarm) in the header
-- Weather widget (current conditions + high/low)
-- Stock ticker (configurable symbols)
+- Weather widget — current conditions + tomorrow's forecast (high/low + precipitation %)
+- Stock ticker (slim banner, configurable symbols)
+- Auto-refreshes every 5 minutes
 
 ### Family Messages Board
 - Leave quick notes for the family (e.g. "I'm at practice, home by 6")
 - Color-coded per person with avatar
 - Unread badge on the nav link — clears when you visit the page
+- Quick-compose from the dashboard without navigating away
 - Messages auto-expire after 7 days
 
 ### Calendar
-- Month view with event details
-- Google Calendar sync (shared family calendar + per-member calendars)
-- Color-coded events by family member
+- Month view with color-coded event dots per family member
+- **Tap any event** to see a detail popover — title, time, location (tappable → Google Maps), description, person tag, delete button
+- Tap a day to see all events in a side panel
+- Google Calendar sync — shared family calendar + per-member calendars
+- Location field synced from Google Calendar automatically
+- Add events directly with optional location and Google Calendar targeting
 
 ### Chores
 - Daily chore assignments per family member with morning/afternoon/evening grouping
@@ -46,6 +51,7 @@ A self-hosted family dashboard built for a wall-mounted touchscreen. Combines ca
 
 ### Security
 - **Camera feeds** — live MJPEG streams via Home Assistant proxy (no go2rtc required)
+- Fullscreen camera modal with prev/next arrows, dot indicators, keyboard arrow keys, and swipe gestures
 - **Garage doors** — open/close control with live state
 - **Alarm panel** — arm home, arm away, disarm with optional PIN
 
@@ -53,6 +59,13 @@ A self-hosted family dashboard built for a wall-mounted touchscreen. Combines ca
 - **Dark mode** — automatically switches after sunset (default 9 PM–7 AM)
 - **Auto-dim** — screen goes nearly black after inactivity (default 5 min); any touch restores it
 - Both configurable in Settings → General → Night Mode
+
+### PWA — Install on Tablet
+The app ships with a Web App Manifest so you can install it to your tablet's home screen:
+- On iPad/iPhone: Safari → Share → Add to Home Screen
+- On Android: Chrome → ⋮ → Add to Home Screen / Install App
+
+Launches full-screen in landscape with no browser chrome.
 
 ### Settings
 Organized into 4 tabs:
@@ -137,12 +150,13 @@ In **Settings → General → Night Mode**:
 Select your local timezone — affects all date/time displays and the lunch menu.
 
 ### Weather
-Enter your US zip code for current conditions on the dashboard.
+Enter your US zip code for current conditions and tomorrow's forecast on the dashboard.
 
 ### Google Calendar
 - Connect a shared family Google account for the main calendar
 - Choose which Google Calendars to sync
 - New events created in Family Hub are added to your selected calendar
+- Event locations sync automatically from Google Calendar
 
 ### School Lunch Menu
 Enter your Nutrislice school domain (e.g. `bcps`) in Settings → Integrations → Lunch.
