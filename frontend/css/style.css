@@ -783,7 +783,8 @@ textarea.form-input { resize: vertical; min-height: 72px; }
 .sec-row {
   display: flex;
   align-items: center;
-  gap: 14px;
+  flex-wrap: wrap;
+  gap: 10px 14px;
   padding: 14px 18px;
   background: var(--surface);
   border-radius: 14px;
@@ -813,7 +814,7 @@ textarea.form-input { resize: vertical; min-height: 72px; }
 .sec-row-badge.closed   { background: #e6f9ed; color: #1a8a3c; }
 .sec-row-badge.armed    { background: #fff3cd; color: #856404; }
 .sec-row-badge.disarmed { background: var(--primary-light); color: var(--primary); }
-.sec-row-btns { display: flex; gap: 8px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+.sec-row-btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; margin-left: auto; }
 .sec-section  { display: flex; flex-direction: column; }
 .sec-section-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 0 16px; }
 
@@ -1407,10 +1408,44 @@ textarea.form-input { resize: vertical; min-height: 72px; }
 
 /* ── Camera Feeds ──────────────────────────────────────────── */
 .camera-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
-.camera-feed-card { background: var(--surface); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+.camera-feed-card { background: var(--surface); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+.camera-feed-card:hover { transform: scale(1.01); box-shadow: var(--shadow-lg); }
 .camera-feed-label { padding: 10px 14px; font-weight: 700; font-size: 14px; border-bottom: 1px solid var(--border); }
 .camera-feed-iframe { width: 100%; aspect-ratio: 16/9; border: none; display: block; background: #000; }
 .camera-feed-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; background: #000; }
+
+/* ── Camera Fullscreen Modal ────────────────────────────────── */
+.camera-modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.88);
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+.camera-modal {
+  width: min(92vw, 1100px);
+  background: #111318;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+  animation: scaleIn 0.2s ease;
+}
+.camera-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px;
+  background: #1a1f2e;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.camera-modal-title { color: #fff; font-weight: 700; font-size: 16px; }
+.camera-modal-close {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,0.1); color: #fff;
+  font-size: 16px; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.camera-modal-close:hover { background: rgba(255,255,255,0.2); }
+.camera-modal-img { width: 100%; display: block; background: #000; max-height: 75vh; object-fit: contain; }
+@keyframes scaleIn { from { transform: scale(0.93); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
 
 /* ── School Menu Widget ───────────────────────────────────── */
 .menu-compact {
@@ -1680,6 +1715,11 @@ textarea.form-input { resize: vertical; min-height: 72px; }
 [data-theme="dark"] .form-input,
 [data-theme="dark"] .modal { background: var(--surface); color: var(--text); border-color: var(--border); }
 [data-theme="dark"] input, [data-theme="dark"] select, [data-theme="dark"] textarea { background: var(--surface2); color: var(--text); border-color: var(--border); }
+[data-theme="dark"] .sec-row.sec-open     { background: rgba(255,59,48,0.12); }
+[data-theme="dark"] .sec-row.sec-closed   { background: rgba(52,199,89,0.10); }
+[data-theme="dark"] .sec-row.sec-armed    { background: rgba(255,179,71,0.12); }
+[data-theme="dark"] .sec-row.sec-disarmed { background: rgba(79,110,247,0.15); }
+[data-theme="dark"] .alarm-card.sec-armed { background: rgba(255,179,71,0.12); }
 
 /* ── Auto-dim overlay ──────────────────────────────────────── */
 html { transition: filter 2s ease; }

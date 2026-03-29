@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Security – Family Hub</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/css/style.css?v=18">
+<link rel="stylesheet" href="/css/style.css?v=20">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
@@ -104,9 +104,20 @@
   </main>
 </div>
 
-<script src="/js/api.js?v=18"></script>
-<script src="/js/security.js?v=18"></script>
-<script src="/js/slideshow.js?v=18"></script>
+<!-- Camera Fullscreen Modal -->
+<div class="camera-modal-overlay" id="cameraModal" onclick="closeCameraModal()" style="display:none">
+  <div class="camera-modal" onclick="event.stopPropagation()">
+    <div class="camera-modal-header">
+      <span class="camera-modal-title" id="cameraModalTitle"></span>
+      <button class="camera-modal-close" onclick="closeCameraModal()">✕</button>
+    </div>
+    <img class="camera-modal-img" id="cameraModalImg" src="" alt="">
+  </div>
+</div>
+
+<script src="/js/api.js?v=20"></script>
+<script src="/js/security.js?v=20"></script>
+<script src="/js/slideshow.js?v=20"></script>
 <button class="slideshow-trigger" onclick="Slideshow.start()" title="Start slideshow">📷</button>
 </body>
 </html>

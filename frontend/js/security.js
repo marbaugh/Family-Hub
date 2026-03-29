@@ -143,8 +143,10 @@ async function loadCameraFeeds() {
     section.style.display = 'block';
     grid.innerHTML = cameras.map(cam => {
       const streamUrl = `/api/security/camera/${encodeURIComponent(cam.ha_entity_id)}/stream`;
+      const safeUrl = streamUrl.replace(/'/g, "\\'");
+      const safeName = cam.name.replace(/'/g, "\\'");
       return `
-        <div class="camera-feed-card">
+        <div class="camera-feed-card" onclick="openCameraModal('${safeName}','${safeUrl}')">
           <div class="camera-feed-label">${cam.name}</div>
           <div class="camera-placeholder" id="ph-${cam.ha_entity_id}">
             <div class="camera-placeholder-icon">📷</div>
@@ -159,4 +161,24 @@ async function loadCameraFeeds() {
     section.style.display = 'none';
     notConfigured.style.display = 'block';
   }
+}
+
+// ── Camera Fullscreen Modal ────────────────────────────────────
+function openCameraModal(name, streamUrl) {
+  document.getElementById('cameraModalTitle').textContent = name;
+  document.getElementById('cameraModalImg').src = streamUrl;
+  const modal = document.getElementById('cameraModal');
+  modal.style.display = 'flex';
+  document.addEventListener('keydown', _modalKeyClose);
+}
+
+function closeCameraModal() {
+  const modal = document.getElementById('cameraModal');
+  modal.style.display = 'none';
+  document.getElementById('cameraModalImg').src = '';
+  document.removeEventListener('keydown', _modalKeyClose);
+}
+
+function _modalKeyClose(e) {
+  if (e.key === 'Escape') closeCameraModal();
 }
