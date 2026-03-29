@@ -10,7 +10,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Family Hub">
-<link rel="stylesheet" href="/css/style.css?v=24">
+<link rel="stylesheet" href="/css/style.css?v=26">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
@@ -70,7 +70,10 @@
     <div id="stockTicker" class="stock-ticker" style="display:none"></div>
 
     <!-- Message Preview Pill -->
-    <a href="/messages.html" id="msgPreviewPill" class="msg-preview-pill" style="display:none"></a>
+    <div id="msgPreviewPill" class="msg-preview-pill">
+      <a href="/messages.html" id="msgPreviewContent" class="msg-preview-content"></a>
+      <button class="msg-compose-btn" onclick="openComposeModal(event)" title="Leave a message">✏️</button>
+    </div>
 
     <!-- 3-column dashboard grid -->
     <div class="dashboard-grid">
@@ -121,9 +124,30 @@
   </main>
 </div>
 
-<script src="/js/api.js?v=24"></script>
-<script src="/js/dashboard.js?v=24"></script>
-<script src="/js/slideshow.js?v=24"></script>
+<!-- Quick Compose Modal -->
+<div class="modal-overlay" id="composeModal" style="display:none" onclick="closeComposeModal()">
+  <div class="modal" style="max-width:460px" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3>💬 Leave a Message</h3>
+      <button class="btn-close" onclick="closeComposeModal()">✕</button>
+    </div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+      <div>
+        <label class="form-label">Who's leaving this note?</label>
+        <select id="composeAuthor" class="form-input"></select>
+      </div>
+      <div>
+        <label class="form-label">Message</label>
+        <textarea id="composeBody" class="form-input" rows="3" placeholder="e.g. I'm at practice, home by 6…" style="resize:none"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="postQuickMessage()">Post Message</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js?v=26"></script>
+<script src="/js/dashboard.js?v=26"></script>
+<script src="/js/slideshow.js?v=26"></script>
 <button class="slideshow-trigger" onclick="Slideshow.start()" title="Start slideshow">📷</button>
 </body>
 </html>

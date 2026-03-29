@@ -10,7 +10,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Family Hub">
-<link rel="stylesheet" href="/css/style.css?v=24">
+<link rel="stylesheet" href="/css/style.css?v=26">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
@@ -113,16 +113,19 @@
 <div class="camera-modal-overlay" id="cameraModal" onclick="closeCameraModal()" style="display:none">
   <div class="camera-modal" onclick="event.stopPropagation()">
     <div class="camera-modal-header">
+      <button class="camera-modal-nav" id="camPrev" onclick="cycleCameraModal(-1)">&#8249;</button>
       <span class="camera-modal-title" id="cameraModalTitle"></span>
+      <button class="camera-modal-nav" id="camNext" onclick="cycleCameraModal(1)">&#8250;</button>
       <button class="camera-modal-close" onclick="closeCameraModal()">✕</button>
     </div>
     <img class="camera-modal-img" id="cameraModalImg" src="" alt="">
+    <div class="camera-modal-dots" id="cameraModalDots"></div>
   </div>
 </div>
 
-<script src="/js/api.js?v=24"></script>
-<script src="/js/security.js?v=24"></script>
-<script src="/js/slideshow.js?v=24"></script>
+<script src="/js/api.js?v=26"></script>
+<script src="/js/security.js?v=26"></script>
+<script src="/js/slideshow.js?v=26"></script>
 <button class="slideshow-trigger" onclick="Slideshow.start()" title="Start slideshow">📷</button>
 </body>
 </html>

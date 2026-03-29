@@ -62,18 +62,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function loadMessagePreview() {
-  const pill = document.getElementById('msgPreviewPill');
-  if (!pill) return;
+  const content = document.getElementById('msgPreviewContent');
+  if (!content) return;
   try {
     const msgs = await API.get('/api/messages/');
-    if (!msgs.length) { pill.style.display = 'none'; return; }
+    if (!msgs.length) {
+      content.innerHTML = `<span class="msg-preview-icon">💬</span><span class="msg-preview-text" style="color:var(--text3)">No messages yet — tap ✏️ to leave a note</span>`;
+      return;
+    }
     const m = msgs[0];
     const color  = m.color  || 'var(--text2)';
     const avatar = m.avatar || '💬';
     const name   = m.name   || 'Someone';
     const extra  = msgs.length > 1 ? `+${msgs.length - 1} more` : '';
-    pill.style.display = 'flex';
-    pill.innerHTML = `
+    content.innerHTML = `
       <span class="msg-preview-icon">💬</span>
       <span class="msg-preview-from" style="color:${color}">${avatar} ${name}</span>
       <span class="msg-preview-divider">·</span>
@@ -81,6 +83,41 @@ async function loadMessagePreview() {
       ${extra ? `<span class="msg-preview-more">${extra} →</span>` : '<span class="msg-preview-more">→</span>'}
     `;
   } catch(e) { /* silently fail */ }
+}
+
+async function openComposeModal(e) {
+  e.preventDefault();
+  // Populate author dropdown
+  const sel = document.getElementById('composeAuthor');
+  sel.innerHTML = '<option value="">— Anonymous —</option>';
+  try {
+    const members = await API.get('/api/members/');
+    members.forEach(m => {
+      sel.innerHTML += `<option value="${m.id}">${m.avatar || '👤'} ${m.name}</option>`;
+    });
+  } catch(_) {}
+  document.getElementById('composeBody').value = '';
+  document.getElementById('composeModal').style.display = 'flex';
+  setTimeout(() => document.getElementById('composeBody').focus(), 100);
+}
+
+function closeComposeModal() {
+  document.getElementById('composeModal').style.display = 'none';
+}
+
+async function postQuickMessage() {
+  const body = document.getElementById('composeBody').value.trim();
+  if (!body) return;
+  const author_id = document.getElementById('composeAuthor').value || null;
+  try {
+    await API.post('/api/messages/', { body, author_id: author_id ? parseInt(author_id) : null });
+    closeComposeModal();
+    showToast('Message posted!', 'success');
+    loadMessagePreview();
+    loadMessageBadge();
+  } catch(e) {
+    showToast('Failed to post message', 'error');
+  }
 }
 
 async function loadTodayEvents() {

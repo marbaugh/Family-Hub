@@ -164,21 +164,66 @@ async function loadCameraFeeds() {
 }
 
 // ── Camera Fullscreen Modal ────────────────────────────────────
+let _modalCameras = [];
+let _modalIndex = 0;
+let _swipeStartX = null;
+
 function openCameraModal(name, streamUrl) {
-  document.getElementById('cameraModalTitle').textContent = name;
-  document.getElementById('cameraModalImg').src = streamUrl;
-  const modal = document.getElementById('cameraModal');
-  modal.style.display = 'flex';
-  document.addEventListener('keydown', _modalKeyClose);
+  // Build ordered list from rendered grid
+  const cards = document.querySelectorAll('.camera-feed-card');
+  _modalCameras = Array.from(cards).map(card => ({
+    name: card.querySelector('.camera-feed-label').textContent,
+    url:  card.querySelector('.camera-feed-img')?.src || ''
+  }));
+  _modalIndex = _modalCameras.findIndex(c => c.name === name);
+  if (_modalIndex < 0) _modalIndex = 0;
+  _showModalCamera(_modalIndex);
+  document.getElementById('cameraModal').style.display = 'flex';
+  document.addEventListener('keydown', _modalKeyHandler);
+  // Swipe support
+  const img = document.getElementById('cameraModalImg');
+  img.addEventListener('touchstart', _swipeStart, { passive: true });
+  img.addEventListener('touchend',   _swipeEnd,   { passive: true });
+}
+
+function _showModalCamera(idx) {
+  const cam = _modalCameras[idx];
+  document.getElementById('cameraModalTitle').textContent = cam.name;
+  document.getElementById('cameraModalImg').src = cam.url;
+  // Dots
+  const dots = document.getElementById('cameraModalDots');
+  dots.innerHTML = _modalCameras.map((_, i) =>
+    `<span class="cam-dot ${i === idx ? 'active' : ''}"></span>`
+  ).join('');
+  // Hide nav arrows if only one camera
+  document.getElementById('camPrev').style.visibility = _modalCameras.length > 1 ? 'visible' : 'hidden';
+  document.getElementById('camNext').style.visibility = _modalCameras.length > 1 ? 'visible' : 'hidden';
+}
+
+function cycleCameraModal(dir) {
+  _modalIndex = (_modalIndex + dir + _modalCameras.length) % _modalCameras.length;
+  _showModalCamera(_modalIndex);
 }
 
 function closeCameraModal() {
-  const modal = document.getElementById('cameraModal');
-  modal.style.display = 'none';
+  document.getElementById('cameraModal').style.display = 'none';
   document.getElementById('cameraModalImg').src = '';
-  document.removeEventListener('keydown', _modalKeyClose);
+  document.removeEventListener('keydown', _modalKeyHandler);
+  const img = document.getElementById('cameraModalImg');
+  img.removeEventListener('touchstart', _swipeStart);
+  img.removeEventListener('touchend',   _swipeEnd);
 }
 
-function _modalKeyClose(e) {
-  if (e.key === 'Escape') closeCameraModal();
+function _modalKeyHandler(e) {
+  if (e.key === 'Escape')      closeCameraModal();
+  if (e.key === 'ArrowRight')  cycleCameraModal(1);
+  if (e.key === 'ArrowLeft')   cycleCameraModal(-1);
+}
+
+function _swipeStart(e) { _swipeStartX = e.touches[0].clientX; }
+function _swipeEnd(e) {
+  if (_swipeStartX === null) return;
+  const dx = e.changedTouches[0].clientX - _swipeStartX;
+  if (Math.abs(dx) > 50) cycleCameraModal(dx < 0 ? 1 : -1);
+  _swipeStartX = null;
 }
