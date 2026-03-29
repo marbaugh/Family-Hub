@@ -167,6 +167,25 @@ async function loadMessageBadge() {
   } catch(e) {}
 }
 
+// ── PWA Install Prompt ────────────────────────────────────────
+let _installPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _installPrompt = e;
+  const btn = document.getElementById('pwaInstallBtn');
+  if (btn) btn.style.display = 'flex';
+});
+window.addEventListener('appinstalled', () => {
+  _installPrompt = null;
+  const btn = document.getElementById('pwaInstallBtn');
+  if (btn) btn.style.display = 'none';
+});
+function pwaInstall() {
+  if (!_installPrompt) return;
+  _installPrompt.prompt();
+  _installPrompt.userChoice.then(() => { _installPrompt = null; });
+}
+
 // Init sidebar + theme on all pages
 document.addEventListener('DOMContentLoaded', () => {
   loadSidebarMembers();
