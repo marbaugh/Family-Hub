@@ -40,6 +40,7 @@ def get_chores(
     since_days: Optional[int] = Query(None)
 ):
     conn = get_db()
+    _advance_recurring_to_today(conn)
     today = datetime.now().date().isoformat()
     query = """
         SELECT c.*, m.name as member_name, m.color as member_color
@@ -174,6 +175,68 @@ def get_leaderboard():
 
     conn.close()
     return result
+
+def _advance_recurring_to_today(conn):
+    """Create any missing recurring chore occurrences up to today.
+    Handles the case where a chore was missed (not completed) so
+    _create_next_recurrence was never called."""
+    today = datetime.now().date()
+    rows = conn.execute("""
+        SELECT *, MAX(due_date) as max_due FROM chores
+        WHERE recurrence IS NOT NULL AND due_date IS NOT NULL
+        GROUP BY title, COALESCE(assigned_to, -1)
+        HAVING date(MAX(due_date)) < date('now')
+    """).fetchall()
+    created = False
+    for row in rows:
+        chore = dict(row)
+        chore["due_date"] = chore["max_due"]
+        for _ in range(60):
+            due = datetime.fromisoformat(chore["due_date"]).date()
+            interval = chore.get("recurrence_interval") or 1
+            rec = chore["recurrence"]
+            if rec == "daily":
+                next_due = due + timedelta(days=interval)
+            elif rec == "weekdays":
+                next_due = due + timedelta(days=1)
+                while next_due.weekday() >= 5:
+                    next_due += timedelta(days=1)
+            elif rec == "weekly":
+                next_due = due + timedelta(weeks=interval)
+            elif rec == "monthly":
+                month = due.month + interval
+                year = due.year + (month - 1) // 12
+                month = ((month - 1) % 12) + 1
+                next_due = due.replace(year=year, month=month)
+            elif rec == "custom_days":
+                day_map = {"Mon": 0, "Tue": 1, "Wed": 2, "Thu": 3, "Fri": 4, "Sat": 5, "Sun": 6}
+                selected = sorted([day_map[d.strip()] for d in (chore.get("recurrence_days") or "").split(",") if d.strip() in day_map])
+                if not selected:
+                    break
+                current_wd = due.weekday()
+                next_wd = next((d for d in selected if d > current_wd), selected[0])
+                next_due = due + timedelta(days=(next_wd - current_wd) % 7 or 7)
+            else:
+                break
+            if next_due > today:
+                break
+            next_due_str = next_due.isoformat()
+            existing = conn.execute(
+                "SELECT id FROM chores WHERE title=? AND assigned_to IS ? AND due_date=?",
+                (chore["title"], chore["assigned_to"], next_due_str)
+            ).fetchone()
+            if not existing:
+                conn.execute("""
+                    INSERT INTO chores (title, description, assigned_to, due_date, recurrence,
+                                       recurrence_days, recurrence_interval, points, time_of_day)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (chore["title"], chore.get("description"), chore["assigned_to"],
+                      next_due_str, chore["recurrence"], chore.get("recurrence_days"),
+                      interval, chore["points"], chore.get("time_of_day")))
+                created = True
+            chore["due_date"] = next_due_str
+    if created:
+        conn.commit()
 
 def _create_next_recurrence(conn, chore: dict):
     """When a recurring chore is completed, create the next one."""
