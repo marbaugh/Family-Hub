@@ -36,7 +36,8 @@ class ChoreUpdate(BaseModel):
 def get_chores(
     assigned_to: Optional[int] = Query(None),
     completed: Optional[bool] = Query(None),
-    hide_future: Optional[bool] = Query(False)
+    hide_future: Optional[bool] = Query(False),
+    since_days: Optional[int] = Query(None)
 ):
     conn = get_db()
     today = datetime.now().date().isoformat()
@@ -54,9 +55,12 @@ def get_chores(
         query += " AND c.completed = ?"
         params.append(1 if completed else 0)
     if hide_future:
-        # Exclude chores due in the future (next recurrence not yet due)
         query += " AND (c.due_date IS NULL OR c.due_date <= ?)"
         params.append(today)
+    if since_days is not None:
+        cutoff = (datetime.now().date() - timedelta(days=since_days)).isoformat()
+        query += " AND (c.due_date IS NULL OR c.due_date >= ?)"
+        params.append(cutoff)
     query += " ORDER BY c.completed ASC, c.due_date ASC NULLS LAST, c.created_at DESC"
     chores = conn.execute(query, params).fetchall()
     conn.close()

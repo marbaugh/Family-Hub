@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('choreModal').onclick = e => { if (e.target.id === 'choreModal') closeChoreModal(); };
   document.getElementById('toggleAllChores').onclick = () => {
     showingAll = !showingAll;
-    document.getElementById('toggleAllChores').textContent = showingAll ? '📅 Today Only' : '📋 All Chores';
+    document.getElementById('toggleAllChores').textContent = showingAll ? '📅 Today Only' : '📋 Last 7 Days';
     loadChores();
   };
 });
@@ -93,7 +93,7 @@ function updateTodBtnStyles() {
 
 async function loadChores() {
   try {
-    const url = showingAll ? '/api/chores/' : '/api/chores/?hide_future=true';
+    const url = showingAll ? '/api/chores/?since_days=7' : '/api/chores/?hide_future=true';
     allChores = await API.get(url);
     renderChores();
   } catch(e) {
