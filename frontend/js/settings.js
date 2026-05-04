@@ -235,7 +235,7 @@ function _updateSyncStatus(lastSynced) {
 async function saveSyncInterval() {
   const val = document.getElementById('syncIntervalPicker').value;
   try {
-    await API.post('/api/settings/', { key: 'google_sync_interval', value: val });
+    await API.post('/api/settings/', { google_sync_interval: val });
     showToast(val === '0' ? 'Auto-sync disabled' : 'Auto-sync saved', 'success');
   } catch(e) {
     showToast('Failed to save', 'error');
