@@ -283,24 +283,29 @@ function buildAllView(chores) {
       byMember[c.assigned_to].push(c);
     } else unassigned.push(c);
   }
-  let html = '';
+  let cols = '';
   for (const m of members) {
     if (!byMember[m.id]?.length) continue;
-    html += `<div class="chore-person-section">
-      <div class="chore-person-header">
-        <span class="chore-person-avatar">${m.avatar||'👤'}</span>
-        <span class="chore-person-name" style="color:${m.color}">${m.name}</span>
-      </div>
-      ${byMember[m.id].map(c => renderChoreItemFull(c)).join('')}
-    </div>`;
+    cols += `
+      <div class="chore-column">
+        <div class="chore-column-header" style="border-bottom:3px solid ${m.color}">
+          <span style="font-size:24px">${m.avatar||'👤'}</span>
+          <div class="chore-column-name" style="color:${m.color}">${m.name}</div>
+        </div>
+        <div class="chore-column-body">${byMember[m.id].map(c => renderChoreItemFull(c)).join('')}</div>
+      </div>`;
   }
   if (unassigned.length) {
-    html += `<div class="chore-person-section">
-      <div class="chore-person-header"><span class="chore-person-avatar">📋</span><span class="chore-person-name">Unassigned</span></div>
-      ${unassigned.map(c => renderChoreItemFull(c)).join('')}
-    </div>`;
+    cols += `
+      <div class="chore-column">
+        <div class="chore-column-header" style="border-bottom:3px solid #9AA0B8">
+          <span style="font-size:24px">📋</span>
+          <div class="chore-column-name">Unassigned</div>
+        </div>
+        <div class="chore-column-body">${unassigned.map(c => renderChoreItemFull(c)).join('')}</div>
+      </div>`;
   }
-  return html || '<div class="empty-state">No chores yet!</div>';
+  return cols ? `<div class="chore-columns">${cols}</div>` : '<div class="empty-state">No chores yet!</div>';
 }
 
 function renderChoreItemFull(c) {
