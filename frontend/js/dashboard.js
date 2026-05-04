@@ -198,7 +198,7 @@ async function loadUpcomingChores() {
   const el = document.getElementById('upcomingChores');
   try {
     const [chores, members] = await Promise.all([
-      API.get('/api/chores/?hide_future=true&completed=false'),
+      API.get('/api/chores/?hide_future=true&completed=false&since_days=0'),
       API.get('/api/members/')
     ]);
 
