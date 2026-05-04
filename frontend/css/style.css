@@ -1227,6 +1227,10 @@ textarea.form-input { resize: vertical; min-height: 72px; }
 .chore-card:last-child { margin-bottom: 0; }
 .chore-card.done { opacity: 0.55; background: var(--bg2); }
 .chore-card:hover { box-shadow: var(--shadow-lg); }
+.chore-card.missed { opacity: 0.5; background: var(--bg2); border-left-color: var(--text-muted) !important; cursor: default; }
+.chore-card.missed:hover { box-shadow: none; }
+.missed-x { display:flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; border:2px solid var(--text-muted); color:var(--text-muted); font-size:13px; flex-shrink:0; }
+.missed-section { margin-top: 8px; border-top: 1px dashed var(--border); padding-top: 8px; }
 
 .chore-card-check {
   width: 28px;

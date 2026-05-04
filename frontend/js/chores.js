@@ -118,6 +118,21 @@ function isTodayChore(c) {
   return true;
 }
 
+function isOverdueChore(c) {
+  if (c.completed || !c.due_date) return false;
+  const today = toETDateStr(new Date());
+  const cutoff = toETDateStr(new Date(Date.now() - 3 * 24 * 60 * 60 * 1000));
+  return c.due_date < today && c.due_date >= cutoff;
+}
+
+function missedDateLabel(dateStr) {
+  const yesterday = toETDateStr(new Date(Date.now() - 1 * 24 * 60 * 60 * 1000));
+  const twoDaysAgo = toETDateStr(new Date(Date.now() - 2 * 24 * 60 * 60 * 1000));
+  if (dateStr === yesterday) return 'Yesterday';
+  if (dateStr === twoDaysAgo) return '2 days ago';
+  return '3 days ago';
+}
+
 function renderChores() {
   const el = document.getElementById('choresList');
   const chores = showingAll ? allChores : allChores.filter(isTodayChore);
@@ -136,14 +151,16 @@ function renderChores() {
   }
 
   // TODAY VIEW: columns per person, each with time-of-day sections
+  const missed = allChores.filter(isOverdueChore);
   const memberCols = members.map(m => ({
     member: m,
     chores: chores.filter(c => c.assigned_to == m.id),
-  })).filter(b => b.chores.length);
+    missed: missed.filter(c => c.assigned_to == m.id),
+  })).filter(b => b.chores.length || b.missed.length);
 
   const unassigned = chores.filter(c => !c.assigned_to);
   if (unassigned.length) {
-    memberCols.push({ member: { id: null, name: 'Unassigned', avatar: '📋', color: '#9AA0B8' }, chores: unassigned });
+    memberCols.push({ member: { id: null, name: 'Unassigned', avatar: '📋', color: '#9AA0B8' }, chores: unassigned, missed: [] });
   }
 
   if (!memberCols.length) {
@@ -151,10 +168,10 @@ function renderChores() {
     return;
   }
 
-  el.innerHTML = `<div class="chore-columns">${memberCols.map(b => buildPersonColumn(b.member, b.chores)).join('')}</div>`;
+  el.innerHTML = `<div class="chore-columns">${memberCols.map(b => buildPersonColumn(b.member, b.chores, b.missed)).join('')}</div>`;
 }
 
-function buildPersonColumn(member, chores) {
+function buildPersonColumn(member, chores, missed = []) {
   const total = chores.length;
   const done = chores.filter(c => c.completed).length;
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
@@ -201,6 +218,15 @@ function buildPersonColumn(member, chores) {
       </div>`;
   }).join('');
 
+  const missedSection = missed.length ? `
+    <div class="tod-section missed-section">
+      <div class="tod-section-header" style="color:var(--text-muted)">
+        <span>❌ Missed</span>
+        <span class="tod-section-progress">${missed.length}</span>
+      </div>
+      ${missed.map(c => renderMissedChoreCard(c)).join('')}
+    </div>` : '';
+
   return `
     <div class="chore-column">
       <div class="chore-column-header" style="border-bottom:3px solid ${member.color}">
@@ -212,14 +238,23 @@ function buildPersonColumn(member, chores) {
           <div class="tod-summary-row">${todSummary}</div>
         </div>
       </div>
-      <div class="chore-column-body">${sections || '<div class="empty-state" style="padding:16px">🎉 All done!</div>'}</div>
+      <div class="chore-column-body">${sections || '<div class="empty-state" style="padding:16px">🎉 All done!</div>'}${missedSection}</div>
+    </div>`;
+}
+
+function renderMissedChoreCard(c) {
+  return `
+    <div class="chore-card missed">
+      <div class="chore-card-check missed-x">✕</div>
+      <div class="chore-card-body">
+        <div class="chore-card-title done">${c.title}</div>
+        <div class="chore-card-pts" style="color:var(--text-muted)">📅 ${missedDateLabel(c.due_date)}</div>
+      </div>
     </div>`;
 }
 
 function renderChoreCard(c, color) {
   const isDone = c.completed;
-  const tod = c.time_of_day || 'anytime';
-  const todColor = TOD_CONFIG[tod]?.color || color;
   return `
     <div class="chore-card ${isDone ? 'done' : ''}" id="chore-${c.id}" style="border-left:3px solid ${color};background:${color}18">
       <div class="chore-card-check ${isDone ? 'checked' : ''}"
