@@ -445,6 +445,39 @@ async def _sync_calendars(access_token: str, calendar_ids: list, conn, is_family
             synced += 1
     return synced
 
+@router.get("/sync/status")
+async def get_sync_status():
+    conn = get_db()
+    last = conn.execute("SELECT value FROM settings WHERE key='google_last_synced'").fetchone()
+    interval = conn.execute("SELECT value FROM settings WHERE key='google_sync_interval'").fetchone()
+    conn.close()
+    return {
+        "last_synced": last["value"] if last else None,
+        "interval_minutes": int(interval["value"]) if interval else 0,
+    }
+
+async def run_full_sync():
+    """Auto-sync all connected Google Calendars. Called by background loop."""
+    conn = get_db()
+    family_cal = conn.execute("SELECT * FROM family_google_calendar LIMIT 1").fetchone()
+    members_list = conn.execute("SELECT id FROM members WHERE google_access_token IS NOT NULL").fetchall()
+    conn.close()
+    if family_cal:
+        try:
+            await sync_family_google_calendar()
+        except Exception:
+            pass
+    for m in members_list:
+        try:
+            await sync_member_google_calendar(m["id"])
+        except Exception:
+            pass
+    conn = get_db()
+    conn.execute("INSERT OR REPLACE INTO settings (key, value) VALUES ('google_last_synced', ?)",
+                 (datetime.utcnow().isoformat(),))
+    conn.commit()
+    conn.close()
+
 @router.post("/sync/family")
 async def sync_family_google_calendar():
     conn = get_db()

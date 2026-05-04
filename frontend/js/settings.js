@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   loadMembers();
   loadGoogleStatus();
+  loadSyncInterval();
   loadSlideshowSettings();
   loadWeatherZip();
   loadHASettings();
@@ -212,6 +213,33 @@ async function disconnectMember(id) {
   await API.delete(`/api/auth/google/disconnect/member/${id}`);
   showToast('Disconnected', '');
   loadGoogleStatus();
+}
+
+async function loadSyncInterval() {
+  try {
+    const data = await API.get('/api/calendar/sync/status');
+    const sel = document.getElementById('syncIntervalPicker');
+    if (sel) sel.value = data.interval_minutes || 0;
+    _updateSyncStatus(data.last_synced);
+  } catch(e) {}
+}
+
+function _updateSyncStatus(lastSynced) {
+  const el = document.getElementById('syncIntervalStatus');
+  if (!el) return;
+  if (!lastSynced) { el.textContent = ''; return; }
+  const mins = Math.round((Date.now() - new Date(lastSynced + 'Z').getTime()) / 60000);
+  el.textContent = mins < 2 ? 'Last synced just now' : `Last synced ${mins} min ago`;
+}
+
+async function saveSyncInterval() {
+  const val = document.getElementById('syncIntervalPicker').value;
+  try {
+    await API.post('/api/settings/', { key: 'google_sync_interval', value: val });
+    showToast(val === '0' ? 'Auto-sync disabled' : 'Auto-sync saved', 'success');
+  } catch(e) {
+    showToast('Failed to save', 'error');
+  }
 }
 
 async function loadCalendarPicker(type, memberId) {

@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Family Hub">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="/css/style.css?v=31">
+<link rel="stylesheet" href="/css/style.css?v=32">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
@@ -113,6 +113,20 @@
                 <option value="primary">primary ⭐</option>
               </select>
               <button class="btn btn-primary" onclick="saveWriteCalendar()">💾 Save</button>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+            <label class="form-label" style="font-weight:800;margin-bottom:6px;display:block">🔄 Auto-sync interval</label>
+            <p class="settings-desc" style="margin-bottom:8px">Automatically pull updates from Google Calendar in the background.</p>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+              <select id="syncIntervalPicker" class="form-input" style="max-width:220px" onchange="saveSyncInterval()">
+                <option value="0">Off</option>
+                <option value="15">Every 15 minutes</option>
+                <option value="30">Every 30 minutes</option>
+                <option value="60">Every hour</option>
+                <option value="120">Every 2 hours</option>
+              </select>
+              <span id="syncIntervalStatus" style="font-size:13px;color:var(--text-muted)"></span>
             </div>
           </div>
         </div>
@@ -437,9 +451,9 @@
   </div>
 </div>
 
-<script src="/js/api.js?v=31"></script>
-<script src="/js/settings.js?v=31"></script>
-<script src="/js/slideshow.js?v=31"></script>
+<script src="/js/api.js?v=32"></script>
+<script src="/js/settings.js?v=32"></script>
+<script src="/js/slideshow.js?v=32"></script>
 <button class="slideshow-trigger" onclick="Slideshow.start()" title="Start slideshow">📷</button>
 <script>if("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js");</script>
 </body>

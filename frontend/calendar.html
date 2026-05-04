@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Family Hub">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="stylesheet" href="/css/style.css?v=31">
+<link rel="stylesheet" href="/css/style.css?v=32">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
 </head>
@@ -62,6 +62,7 @@
         <h1 class="page-title">📅 Calendar</h1>
       </div>
       <div class="header-actions">
+        <span id="syncStatus" style="font-size:12px;color:var(--text-muted)"></span>
         <button class="btn btn-secondary" id="syncBtn">🔄 Sync Google</button>
         <button class="btn btn-primary" id="addEventBtn">+ Add Event</button>
       </div>
@@ -164,9 +165,9 @@
   </div>
 </div>
 
-<script src="/js/api.js?v=31"></script>
-<script src="/js/calendar.js?v=31"></script>
-<script src="/js/slideshow.js?v=31"></script>
+<script src="/js/api.js?v=32"></script>
+<script src="/js/calendar.js?v=32"></script>
+<script src="/js/slideshow.js?v=32"></script>
 <button class="slideshow-trigger" onclick="Slideshow.start()" title="Start slideshow">📷</button>
 <script>if("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js");</script>
 </body>

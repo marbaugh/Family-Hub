@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   loadCalendarOptions();
   renderCalendar();
   loadEvents();
+  loadSyncStatus();
 
   document.getElementById('prevMonth').onclick = () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); loadEvents(); };
   document.getElementById('nextMonth').onclick = () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); loadEvents(); };
@@ -307,6 +308,16 @@ function closeEventDetail() {
   document.getElementById('eventDetailModal').style.display = 'none';
 }
 
+async function loadSyncStatus() {
+  try {
+    const data = await API.get('/api/calendar/sync/status');
+    const el = document.getElementById('syncStatus');
+    if (!el || !data.last_synced) return;
+    const mins = Math.round((Date.now() - new Date(data.last_synced + 'Z').getTime()) / 60000);
+    el.textContent = mins < 2 ? 'Synced just now' : `Synced ${mins}m ago`;
+  } catch(e) {}
+}
+
 async function syncGoogle() {
   const btn = document.getElementById('syncBtn');
   btn.textContent = '⏳ Syncing...';
@@ -326,6 +337,7 @@ async function syncGoogle() {
     }
     showToast(`✅ Synced ${synced} events from Google`, 'success');
     loadEvents();
+    loadSyncStatus();
   } catch(e) {
     showToast('Sync failed — check Google connections in Settings', 'error');
   } finally {
